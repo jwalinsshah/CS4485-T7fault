@@ -56,6 +56,24 @@ function FaultMainPage() {
     }
   }, [selectedDatabase]);
 
+  // Detect faults whenever alerts change or a database is selected
+useEffect(() => {
+  const detectFaults = async () => {
+    if (selectedDatabase) {
+      try {
+        await axios.post('http://localhost:8000/detect_faults', { database: selectedDatabase });
+        console.log("Fault detection completed successfully.");
+      } catch (error) {
+        console.error("Error detecting faults:", error);
+        setErrorMessage("Error detecting faults. Please try again.");
+      }
+    }
+  };
+
+  detectFaults();
+}, [alerts, selectedDatabase]); // Run whenever alerts or selectedDatabase changes
+
+
   // Use useCallback to memoize refreshAlerts
   const refreshAlerts = useCallback(async () => {
     if (selectedDatabase) {
